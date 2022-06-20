@@ -9,7 +9,7 @@
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="./main.css">
 </head>
 
 <body>
@@ -44,7 +44,6 @@
         <input type="text" class="form-control mt-2" id="title" placeholder="title">
         <textarea class="form-control mt-2" id="content"></textarea>
         <input type="text" class="form-control mt-2" id="price" placeholder="price">
-        <input class="form-control mt-2" type="file" id="image">
         <button class="btn btn-danger mt-3" id="send">올리기</button>
     </div>
 
@@ -73,8 +72,24 @@
     </script>
     <script>
         const db = firebase.firestore()
-        const storage = firebase.storage()
+        const query = new URLSearchParams(window.location.search)
 
+        db.collection('product').doc(query.get('id')).get()
+            .then(result => {
+                console.log(result.data())
+                $('#title').val(result.data().title)
+                $('#content').val(result.data().description)
+                $('#price').val(result.data().price)
+            })
+
+        $('#send').click(function () {
+            const data = {
+                title: $('#title').val(),
+                price: $('#price').val(),
+                content: $('#content').val()
+            }
+            db.collection('product').doc(query.get('id')).update(data)
+        })
         const user = localStorage.getItem('user')
         if (user) $('#username').html(JSON.parse(user).displayName)
         firebase.auth().onAuthStateChanged(user => {
@@ -83,38 +98,6 @@
                 $('#username').html(user.displayName)
             }
         })
-
-        $('#send').click(function () {
-            const file = document.querySelector('#image').files[0]
-            const storageRef = storage.ref()
-            const path = storageRef.child('images/' + file.name)
-            const upload = path.put(file)
-            upload.on('state_changed',
-                null,
-                err => console.error(err),
-                () => {
-                    upload.snapshot.ref.getDownloadURL().then(url => {
-                        console.log(url)
-                        const data = {
-                            title: $('#title').val(),
-                            price: $('#price').val(),
-                            description: $('#content').val(),
-                            createdAt: new Date(),
-                            image: url,
-                            uid: JSON.parse(user).uid,
-                            name: JSON.parse(user).displayName
-                        }
-                        db.collection('product').add(data)
-                            .then((res) => {
-                                console.log(res)
-                                window.location.href = "/index.html"
-                            })
-                            .catch(err => console.log(err))
-                    })
-                }
-            )
-        })
-
     </script>
 </body>
 

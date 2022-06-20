@@ -41,6 +41,7 @@
     </nav>
     <div class="container">
         상세페이지임 
+        <button id="edit">수정</button>
         <div class="detail-pic my-4" style="background-image: url('https://placeimg.com/640/380/tech');"></div>
         <div>
             <h5>올린사람 : 모름</h5>
@@ -78,11 +79,15 @@
     </script>
     <script>
         const db = firebase.firestore()
-
         const query = new URLSearchParams(window.location.search)
 
         db.collection('product').doc(query.get('id')).get()
-            .then(res => console.log(res.data()))
+            .then(result => {
+                console.log(result.data())
+                $('.title').html(result.data().title)
+                $('.price').html(result.data().price)
+                $('.detail-pic').css('background-image', `url(${result.data().image})`)
+            })
         const user = localStorage.getItem('user')
         if (user) $('#username').html(JSON.parse(user).displayName)
         firebase.auth().onAuthStateChanged(user => {
@@ -90,6 +95,9 @@
                 console.log(user.uid, user.displayName)
                 $('#username').html(user.displayName)
             }
+        })
+        $('#edit').click(function () {
+            window.location.href = `./edit.html?id=${query.get('id')}`
         })
     </script>
 </body>
