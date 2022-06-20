@@ -79,19 +79,28 @@
             const storageRef = storage.ref()
             const path = storageRef.child('images/' + file.name)
             const upload = path.put(file)
-
-            const data = {
-                title: $('#title').val(),
-                price: $('#price').val(),
-                description: $('#content').val(),
-                createdAt: new Date()
-            }
-            db.collection('product').add(data)
-                .then((res) => {
-                    console.log(res)
-                    window.location.href = "/index.html"
-                })
-                .catch(err => console.log(err))
+            upload.on('state_changed',
+                null,
+                err => console.error(err),
+                () => {
+                    upload.snapshot.ref.getDownloadURL().then(url => {
+                        console.log(url)
+                        const data = {
+                            title: $('#title').val(),
+                            price: $('#price').val(),
+                            description: $('#content').val(),
+                            createdAt: new Date(),
+                            image: url
+                        }
+                        db.collection('product').add(data)
+                            .then((res) => {
+                                console.log(res)
+                                window.location.href = "/index.html"
+                            })
+                            .catch(err => console.log(err))
+                    })
+                }
+            )
         })
 
     </script>
