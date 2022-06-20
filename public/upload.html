@@ -72,8 +72,14 @@
     </script>
     <script>
         const db = firebase.firestore()
+        const storage = firebase.storage()
 
         $('#send').click(function () {
+            const file = document.querySelector('#image').files[0]
+            const storageRef = storage.ref()
+            const path = storageRef.child('images/' + file.name)
+            const upload = path.put(file)
+
             const data = {
                 title: $('#title').val(),
                 price: $('#price').val(),
