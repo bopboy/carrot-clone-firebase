@@ -41,17 +41,16 @@
     </nav>
     <div class="container">
         상세페이지임 
-        <button id="edit">수정</button>
         <div class="detail-pic my-4" style="background-image: url('https://placeimg.com/640/380/tech');"></div>
         <div>
-            <h5>올린사람 : 모름</h5>
-
+            <h5 class="author">올린사람 : 모름</h5>
             <hr>
             <h5 class="title">상품명</h5>
             <p class="date">올린날짜</p>
             <p class="price">가격</p>
-
         </div>
+        <button class="btn btn-outline-secondary" id="edit">수정</button>
+        <button class="btn btn-outline-secondary" id="chat">채팅</button>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
@@ -84,6 +83,7 @@
         db.collection('product').doc(query.get('id')).get()
             .then(result => {
                 console.log(result.data())
+                $('.author').html(`올림사람: ${result.data().name}`)
                 $('.title').html(result.data().title)
                 $('.price').html(result.data().price)
                 $('.detail-pic').css('background-image', `url(${result.data().image})`)

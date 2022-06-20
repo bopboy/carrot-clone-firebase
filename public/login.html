@@ -124,6 +124,8 @@
             firebase.auth().createUserWithEmailAndPassword(email, password)
                 .then(res => {
                     console.log(res.user)
+                    const userInfo = { name, email }
+                    db.collection('user').doc(res.user.id).set(userInfo)
                     res.user.updateProfile({ displayName: name })
                         .then(() => console.log('이름 업데이트 성공'))
                 })
