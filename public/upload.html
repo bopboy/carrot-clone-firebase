@@ -16,6 +16,7 @@
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="./index.html">짝퉁당근마켓</a>
+            <span class="ms-auto mx-2" id="username"></span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -102,7 +103,14 @@
                 }
             )
         })
-
+        const user = localStorage.getItem('user')
+        if (user) $('#username').html(JSON.parse(user).displayName)
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                console.log(user.uid, user.displayName)
+                $('#username').html(user.displayName)
+            }
+        })
     </script>
 </body>
 
