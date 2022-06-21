@@ -76,7 +76,7 @@
         const storage = firebase.storage()
 
         const user = localStorage.getItem('user')
-        
+
         if (user) $('#username').html(JSON.parse(user).displayName)
         firebase.auth().onAuthStateChanged(user => {
             if (user) {

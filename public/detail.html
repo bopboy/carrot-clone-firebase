@@ -84,7 +84,7 @@
         db.collection('product').doc(query.get('id')).get()
             .then(result => {
                 console.log(result.data())
-                $('.author').html(`올림사람: ${result.data().name}`)
+                $('.author').html(`올린사람: ${result.data().name}`)
                 $('.title').html(result.data().title)
                 $('.price').html(result.data().price)
                 $('.detail-pic').css('background-image', `url(${result.data().image})`)
@@ -112,6 +112,7 @@
                 date: new Date()
             }
             db.collection('chatroom').add(data)
+            window.location.href = "./chat.html"
         })
     </script>
 </body>
