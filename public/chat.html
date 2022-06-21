@@ -103,6 +103,7 @@
         })
 
         const myUID = JSON.parse(user).uid
+        let chatRoomID
         db.collection('chatroom').where('who', 'array-contains', myUID).get()
             .then(res => {
                 res.forEach(a => {
@@ -113,9 +114,19 @@
                             <h6 class="text-small">${a.id}</h6>
                         </li>`
                     $('.chat-list').append(template)
+                    $('.list-group-item').click(function () {
+                        chatRoomID = $(this).children('.text-small').text()
+                    })
                 })
             })
-
+        $('#send').click(function () {
+            const data = {
+                content: $('#chat-input').val(),
+                date: new Date(),
+                uid: myUID
+            }
+            db.collection('chatroom').doc('PbemYUnOMQ6SD656KHRf').collection('messages').add(data)
+        })
     </script>
 </body>
 
