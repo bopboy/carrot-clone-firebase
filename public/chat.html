@@ -45,18 +45,18 @@
         <div class="row">
             <div class="col-3 p-0">
                 <ul class="list-group chat-list">
-                    <li class="list-group-item">
+                    <!-- <li class="list-group-item">
                         <h6>채팅방1</h6>
                         <h6 class="text-small">채팅방아이디</h6>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
             <div class="col-9 p-0">
                 <div class="chat-room">
                     <ul class="list-group chat-content">
+                        <!-- <li><span class="chat-box">채팅방1 내용</span></li>
                         <li><span class="chat-box">채팅방1 내용</span></li>
-                        <li><span class="chat-box">채팅방1 내용</span></li>
-                        <li><span class="chat-box mine">채팅방1 내용</span></li>
+                        <li><span class="chat-box mine">채팅방1 내용</span></li> -->
                     </ul>
                     <div class="input-group">
                         <input class="form-control" id="chat-input">
@@ -114,8 +114,19 @@
                             <h6 class="text-small">${a.id}</h6>
                         </li>`
                     $('.chat-list').append(template)
-                    $('.list-group-item').click(function () {
+                    $('.list-group-item').click(function (e) {
+                        e.stopImmediatePropagation()
                         chatRoomID = $(this).children('.text-small').text()
+                        db.collection('chatroom').doc(chatRoomID).collection('messages').orderBy('date').onSnapshot(res => {
+                            $('.chat-content').html('')
+                            res.forEach(a => {
+                                // console.log(a)
+                                const template = `
+                                        <li><span class="chat-box">${a.data().content}</span></li>
+                                    `
+                                $('.chat-content').append(template)
+                            })
+                        })
                     })
                 })
             })
@@ -125,7 +136,7 @@
                 date: new Date(),
                 uid: myUID
             }
-            db.collection('chatroom').doc('PbemYUnOMQ6SD656KHRf').collection('messages').add(data)
+            db.collection('chatroom').doc(chatRoomID).collection('messages').add(data)
         })
     </script>
 </body>
