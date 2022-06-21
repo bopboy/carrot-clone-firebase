@@ -79,6 +79,7 @@
     <script>
         const db = firebase.firestore()
         const query = new URLSearchParams(window.location.search)
+        let myUID, yourUID, product
 
         db.collection('product').doc(query.get('id')).get()
             .then(result => {
@@ -87,6 +88,8 @@
                 $('.title').html(result.data().title)
                 $('.price').html(result.data().price)
                 $('.detail-pic').css('background-image', `url(${result.data().image})`)
+                yourUID = result.data().uid
+                product = result.data().title
             })
         const user = localStorage.getItem('user')
         if (user) $('#username').html(JSON.parse(user).displayName)
@@ -94,10 +97,21 @@
             if (user) {
                 console.log(user.uid, user.displayName)
                 $('#username').html(user.displayName)
+                myUID = user.uid
             }
         })
         $('#edit').click(function () {
             window.location.href = `./edit.html?id=${query.get('id')}`
+        })
+        $('#chat').click(function () {
+            const data = {
+                who: [myUID, yourUID],
+                // from: myUID,
+                // to: yourUID,
+                product,
+                date: new Date()
+            }
+            db.collection('chatroom').add(data)
         })
     </script>
 </body>
